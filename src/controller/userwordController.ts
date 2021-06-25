@@ -1,43 +1,22 @@
-const Users = require("./../model/userModel");
+const UserWord = require("../model/userwordModel");
+exports.createUserWord = async (
+  req: any,
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: object): void; new (): any };
+    };
+  }
+) => {
+  try {
+    req.body.userId = req.params.id;
+    req.body.wordId = req.params.wordid;
 
-exports.createUser = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
-    const newUser = await Users.create(req.body);
+    const newUserWord = await UserWord.create(req.body);
     res.status(200).json({
       status: "success",
-      data: { user: newUser },
-    });
-  } catch (error) {
-    res.status(422).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
-  }
-};
-exports.getUser = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
-    const user = await Users.findById(req.params.id);
-    res.status(200).json({
-      status: "success",
-      data: { user },
+      data: { newUserWord },
     });
   } catch (error) {
     res.status(404).json({
@@ -46,7 +25,7 @@ exports.getUser = async (
     });
   }
 };
-exports.updateUser = async (
+exports.getUserWord = async (
   req: any,
   res: {
     status: (arg0: number) => {
@@ -57,22 +36,21 @@ exports.updateUser = async (
   }
 ) => {
   try {
-    const user = await Users.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
+    const userWord = await UserWord.find({
+      $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
     });
     res.status(200).json({
       status: "success",
-      data: { user },
+      data: { userWord },
     });
   } catch (error) {
-    res.status(400).json({
+    res.status(404).json({
       status: "fail",
       message: "Invalid data send",
     });
   }
 };
-exports.deleteUser = async (
+exports.updateUserWord = async (
   req: any,
   res: {
     status: (arg0: number) => {
@@ -83,13 +61,45 @@ exports.deleteUser = async (
   }
 ) => {
   try {
-    await Users.findByIdAndDelete(req.params.id);
-    res.status(204).json({
+    const update = await UserWord.update(
+      { $and: [{ wordId: req.params.wordid }, { userId: req.params.id }] },
+      { $set: { word: req.body.word } }
+    );
+    res.status(200).json({
       status: "success",
-      data: null,
+      data: { update },
     });
   } catch (error) {
-    res.status(401).json({
+    res.status(404).json({
+      status: "fail",
+      message: "Invalid data send",
+    });
+  }
+};
+exports.deleteUserWord = async (
+  req: any,
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: object): void; new (): any };
+    };
+  }
+) => {
+  try {
+    // const update = await UserWord.update(
+    //   { $and: [{ wordId: req.params.wordid }, { userId: req.params.id }] },
+    //   { $set: { word: req.body.word } }
+    // );
+    await UserWord.deleteMany({
+      $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
+    });
+    res.status(200).json({
+      status: "success",
+      data: { result: null },
+    });
+  } catch (error) {
+    res.status(404).json({
       status: "fail",
       message: "Invalid data send",
     });
