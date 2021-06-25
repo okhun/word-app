@@ -1,9 +1,9 @@
 import express from "express";
-
+import bodyParser from "body-parser";
 const app = express();
-
-app.get("/", (req, res) => {
-  res.status(200).send("Salom Okhunjon");
-});
-
-app.listen(3000, () => console.log("app runining on port 3000"));
+const wordRoutes = require("./routes/wordRoutes");
+const userRoutes = require("./routes/userRoutes");
+app.use(bodyParser.json());
+app.use("/api/v1/words", wordRoutes);
+app.use("/api/v1/users", userRoutes);
+export default app;
