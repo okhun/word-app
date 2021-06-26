@@ -87,16 +87,36 @@ exports.deleteUserWord = async (
   }
 ) => {
   try {
-    // const update = await UserWord.update(
-    //   { $and: [{ wordId: req.params.wordid }, { userId: req.params.id }] },
-    //   { $set: { word: req.body.word } }
-    // );
     await UserWord.deleteMany({
       $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
     });
     res.status(200).json({
       status: "success",
       data: { result: null },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: "Invalid data send",
+    });
+  }
+};
+exports.getUserWords = async (
+  req: any,
+  res: {
+    status: (arg0: number) => {
+      (): any;
+      new (): any;
+      json: { (arg0: object): void; new (): any };
+    };
+  }
+) => {
+  try {
+    const userWords = await UserWord.find({ userId: req.params.id });
+    res.status(200).json({
+      status: "success",
+      results: userWords.length,
+      data: { userWords },
     });
   } catch (error) {
     res.status(404).json({

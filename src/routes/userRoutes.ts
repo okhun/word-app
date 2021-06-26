@@ -9,6 +9,7 @@ router
   .get(userController.getUser)
   .put(userController.updateUser)
   .delete(userController.deleteUser);
+router.route("/:id/words").get(userwordController.getUserWords);
 router
   .route("/:id/words/:wordid")
   .get(userwordController.getUserWord)
