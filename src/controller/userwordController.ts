@@ -1,15 +1,17 @@
 const UserWord = require("../model/userwordModel");
-exports.createUserWord = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+const catchAsync3 = require("../utils/catchAsync");
+exports.createUserWord = catchAsync3(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     req.body.userId = req.params.id;
     req.body.wordId = req.params.wordid;
 
@@ -18,24 +20,20 @@ exports.createUserWord = async (
       status: "success",
       data: { newUserWord },
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
-exports.getUserWord = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+);
+exports.getUserWord = catchAsync3(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     const userWord = await UserWord.find({
       $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
     });
@@ -43,24 +41,20 @@ exports.getUserWord = async (
       status: "success",
       data: { userWord },
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
-exports.updateUserWord = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+);
+exports.updateUserWord = catchAsync3(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     const update = await UserWord.update(
       { $and: [{ wordId: req.params.wordid }, { userId: req.params.id }] },
       { $set: { word: req.body.word } }
@@ -69,24 +63,20 @@ exports.updateUserWord = async (
       status: "success",
       data: { update },
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
-exports.deleteUserWord = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+);
+exports.deleteUserWord = catchAsync3(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     await UserWord.deleteMany({
       $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
     });
@@ -94,34 +84,25 @@ exports.deleteUserWord = async (
       status: "success",
       data: { result: null },
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
-exports.getUserWords = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+);
+exports.getUserWords = catchAsync3(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     const userWords = await UserWord.find({ userId: req.params.id });
     res.status(200).json({
       status: "success",
       results: userWords.length,
       data: { userWords },
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
+);

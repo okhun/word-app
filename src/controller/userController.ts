@@ -1,62 +1,62 @@
 const Users = require("./../model/userModel");
-
-exports.createUser = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+const catchAsync = require("../utils/catchAsync");
+const AppError2 = require("../utils/appError");
+exports.createUser = catchAsync(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     const newUser = await Users.create(req.body);
+    if (!newUser) {
+      return next(new AppError2(`Incorrect e-mail or password`, 422));
+    }
     res.status(200).json({
       status: "success",
       data: { user: newUser },
     });
-  } catch (error) {
-    res.status(422).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
-exports.getUser = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+);
+exports.getUser = catchAsync(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     const user = await Users.findById(req.params.id);
+    if (!user) {
+      return next(new AppError2(`User not found`, 404));
+    }
     res.status(200).json({
       status: "success",
       data: { user },
     });
-  } catch (error) {
-    res.status(404).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
-exports.updateUser = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+);
+exports.updateUser = catchAsync(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     const user = await Users.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -65,33 +65,24 @@ exports.updateUser = async (
       status: "success",
       data: { user },
     });
-  } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
-exports.deleteUser = async (
-  req: any,
-  res: {
-    status: (arg0: number) => {
-      (): any;
-      new (): any;
-      json: { (arg0: object): void; new (): any };
-    };
-  }
-) => {
-  try {
+);
+exports.deleteUser = catchAsync(
+  async (
+    req: any,
+    res: {
+      status: (arg0: number) => {
+        (): any;
+        new (): any;
+        json: { (arg0: object): void; new (): any };
+      };
+    },
+    next: any
+  ) => {
     await Users.findByIdAndDelete(req.params.id);
     res.status(204).json({
       status: "success",
       data: null,
     });
-  } catch (error) {
-    res.status(401).json({
-      status: "fail",
-      message: "Invalid data send",
-    });
   }
-};
+);
