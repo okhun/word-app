@@ -14,7 +14,7 @@ router
 router.route("/:id/words").get(userwordController.getUserWords);
 router
   .route("/:id/words/:wordid")
-  .get(userwordController.getUserWord)
+  .get(authController.protect, userwordController.getUserWord)
   .post(userwordController.createUserWord)
   .put(userwordController.updateUserWord)
   .delete(userwordController.deleteUserWord);

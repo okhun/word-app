@@ -1,5 +1,6 @@
 const UserWord = require("../model/userwordModel");
 const catchAsync3 = require("../utils/catchAsync");
+
 exports.createUserWord = catchAsync3(
   async (
     req: any,

@@ -1,7 +1,14 @@
+const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const UserAuth = require("./../model/userModel");
 const catchAsyncA = require("./../utils/catchAsync");
 const AppError4 = require("../utils/appError");
+
+const signToken = (id: any) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
 exports.signup = catchAsyncA(
   async (
     req: any,
@@ -40,12 +47,35 @@ exports.login = catchAsyncA(
     }
     // 2) Check if user exists and password is correct
     const user = await UserAuth.findOne({ email }).select("+password");
-    const correct = user.correctPassword(password, user.password);
-    if (!user || !correct) {
+    if (!user || !(await user.correctPassword(password, user.password))) {
       return next(new AppError4(`Incorrect email or password`, 401));
     }
     // 3) if everything is ok, send tokento client
-    const token = "";
+    const token = signToken(user._id);
     res.status(200).json({ message: "Authenticated", token, userId: user._id });
   }
 );
+exports.protect = catchAsyncA(async (req: any, res: any, next: any) => {
+  // 1) Getting token and check of it is there
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    return next(new AppError4("Access token is missing or invalid", 401));
+  }
+
+  // 2) Varification token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  console.log(decoded);
+
+  // 3) CHeck if user still exists
+
+  // 4) Check if user changed password after token was issued
+
+  next();
+});

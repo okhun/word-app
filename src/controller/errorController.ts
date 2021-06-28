@@ -7,6 +7,9 @@ const handleDuplicateFieldsDB = (err: any) => {
   const message = `Duplicate field value: ${err.keyValue.name}, Please use another value!`;
   return new AppError3(message, 400);
 };
+const handleJWTError = (err: any) => {
+  return new AppError3("", 400);
+};
 const sendErrorDev = (err: any, res: any) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -54,6 +57,7 @@ module.exports = (
     let error = { ...err };
     if (error.name === "CastError") error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (error.name === "JsonWebTokenError") error = handleJWTError(error);
     sendErrorProd(error, res);
   }
 };
