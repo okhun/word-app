@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "prod": "NODE_ENV=production nodemon server.ts",
+    "prod": "SET NODE_ENV=production nodemon server.ts",
     "build": "tsc -p ."
   },
   "author": "Okhunjon",
