@@ -13,7 +13,11 @@ exports.createUser = catchAsync(
     },
     next: any
   ) => {
-    const newUser = await Users.create(req.body);
+    const newUser = await Users.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+    });
     if (!newUser) {
       return next(new AppError2(`Incorrect e-mail or password`, 422));
     }

@@ -1,8 +1,10 @@
 import express from "express";
 const userController = require("../controller/userController");
 const userwordController = require("../controller/userwordController");
+const authController = require("../controller/authController");
 const router = express.Router();
-
+router.route("/signup").post(authController.signup);
+router.route("/signin").post(authController.login);
 router.route("/").post(userController.createUser);
 router
   .route("/:id")
