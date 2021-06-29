@@ -27,14 +27,12 @@ exports.signup = catchAsyncA(
       password: req.body.password,
     });
 
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+    // const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+    //   expiresIn: process.env.JWT_EXPIRES_IN,
+    // });
 
     res.status(200).json({
-      status: "success",
-      token,
-      data: { user: newUser },
+      message: "Successful creation.",
     });
   }
 );
@@ -48,17 +46,21 @@ exports.login = catchAsyncA(
     // 2) Check if user exists and password is correct
     const user = await UserAuth.findOne({ email }).select("+password");
     if (!user || !(await user.correctPassword(password, user.password))) {
-      return next(new AppError4(`Incorrect email or password`, 401));
+      return next(new AppError4(`Incorrect email or password`, 403));
     }
     // 3) if everything is ok, send tokento client
     const token = signToken(user._id);
-    res.status(200).json({ message: "Authenticated", token, userId: user._id });
+    res.status(200).json({
+      message: "Authenticated",
+      token,
+      userId: user._id,
+      name: user.name,
+    });
   }
 );
 exports.protect = catchAsyncA(async (req: any, res: any, next: any) => {
   // 1) Getting token and check of it is there
   let token;
-
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -71,11 +73,17 @@ exports.protect = catchAsyncA(async (req: any, res: any, next: any) => {
 
   // 2) Varification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
-
   // 3) CHeck if user still exists
-
-  // 4) Check if user changed password after token was issued
-
+  const currentUser = await UserAuth.findById(decoded.id);
+  if (!currentUser) {
+    return next(
+      new AppError3(
+        "The user belonging to this token does no longer exist.",
+        401
+      )
+    );
+  }
+  // GRANT ACCESS TO PROTECTED ROUTE
+  req.user = currentUser;
   next();
 });

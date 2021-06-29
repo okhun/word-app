@@ -3,10 +3,7 @@ import bodyParser from "body-parser";
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controller/errorController");
 const app = express();
-interface ResponseError extends Error {
-  status: string;
-  statusCode: number;
-}
+
 const wordRoutes = require("./routes/wordRoutes");
 const userRoutes = require("./routes/userRoutes");
 app.use(bodyParser.json());
