@@ -1,6 +1,6 @@
 const UserWord = require("../model/userwordModel");
 const catchAsync3 = require("../utils/catchAsync");
-
+const AppError5 = require("../utils/appError");
 exports.createUserWord = catchAsync3(
   async (
     req: any,
@@ -13,6 +13,9 @@ exports.createUserWord = catchAsync3(
     },
     next: any
   ) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError5("Bad request", 400));
+    }
     req.body.userId = req.params.id;
     req.body.wordId = req.params.wordid;
 
@@ -34,6 +37,9 @@ exports.getUserWord = catchAsync3(
     },
     next: any
   ) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError5("Bad request", 400));
+    }
     const userWord = await UserWord.find({
       $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
     });
@@ -58,6 +64,9 @@ exports.updateUserWord = catchAsync3(
     },
     next: any
   ) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError5("Bad request", 400));
+    }
     const updateus = await UserWord.find({
       $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
     });
@@ -90,6 +99,9 @@ exports.deleteUserWord = catchAsync3(
     },
     next: any
   ) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError5("Bad request", 400));
+    }
     await UserWord.deleteMany({
       $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
     });
@@ -111,6 +123,9 @@ exports.getUserWords = catchAsync3(
     },
     next: any
   ) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError5("Bad request", 400));
+    }
     const userWords = await UserWord.find({ userId: req.params.id });
     res.status(200).json({
       status: "success",

@@ -15,6 +15,9 @@ exports.getUser = catchAsync(
     },
     next: any
   ) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError2("You can't get other users info", 400));
+    }
     const user = await Users.findById(req.params.id);
     if (!user) {
       return next(new AppError2(`User not found`, 404));
@@ -37,6 +40,9 @@ exports.updateUser = catchAsync(
     },
     next: any
   ) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError2("You can't update other users", 400));
+    }
     if (req.body.password) {
       req.body.password = await bcrypt2.hash(req.body.password, 12);
     }
@@ -45,7 +51,6 @@ exports.updateUser = catchAsync(
       new: true,
       runValidators: true,
     });
-    console.log(user);
     if (!user) {
       return next(new AppError2(`Bad request`, 400));
     }
@@ -66,6 +71,9 @@ exports.deleteUser = catchAsync(
     },
     next: any
   ) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError2("You can't delete other users", 400));
+    }
     const deleteuser = await Users.findById(req.params.id);
     if (!deleteuser) {
       return next(
@@ -79,30 +87,3 @@ exports.deleteUser = catchAsync(
     });
   }
 );
-
-// exports.createUser = catchAsync(
-//   async (
-//     req: any,
-//     res: {
-//       status: (arg0: number) => {
-//         (): any;
-//         new (): any;
-//         json: { (arg0: object): void; new (): any };
-//       };
-//     },
-//     next: any
-//   ) => {
-//     const newUser = await Users.create({
-//       name: req.body.name,
-//       email: req.body.email,
-//       password: req.body.password,
-//     });
-//     if (!newUser) {
-//       return next(new AppError2(`Incorrect e-mail or password`, 422));
-//     }
-//     res.status(200).json({
-//       status: "success",
-//       data: { user: newUser },
-//     });
-//   }
-// );

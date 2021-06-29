@@ -87,3 +87,6 @@ exports.protect = catchAsyncA(async (req: any, res: any, next: any) => {
   req.user = currentUser;
   next();
 });
+exports.getUserToken = catchAsyncA(async (req: any, res: any, next: any) => {
+  next();
+});
