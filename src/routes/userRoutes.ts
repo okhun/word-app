@@ -10,10 +10,10 @@ router
   .get(authController.protect, authController.getUserToken);
 router
   .route("/:id/aggregatedWords")
-  .get(authController.protect, userController.getAggregatedWords);
+  .get(authController.protect, userwordController.getAggregatedWords);
 router
   .route("/:id/aggregatedWords/:wordId")
-  .get(authController.protect, userController.getAggregatedWordsById);
+  .get(authController.protect, userwordController.getAggregatedWordsById);
 router
   .route("/:id/settings")
   .get(authController.protect, userController.getUserSettings)

@@ -134,3 +134,34 @@ exports.getUserWords = catchAsync3(
     });
   }
 );
+exports.getAggregatedWords = catchAsync3(
+  async (req: any, res: any, next: any) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError5("Bad request", 400));
+    }
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "group", "wordsPerPage"];
+    excludedFields.forEach((el) => delete queryObj[el]);
+    let queryStr = JSON.stringify(queryObj);
+    queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    const query = JSON.parse(queryStr);
+    const aggWords = await UserWord.find({
+      $and: [
+        { "word.difficulty": req.query.difficulty },
+        { userId: req.params.id },
+      ],
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: { aggWords },
+    });
+  }
+);
+exports.getAggregatedWordsById = catchAsync3(
+  async (req: any, res: any, next: any) => {
+    res.status(204).json({
+      message: "The user has been deleted",
+    });
+  }
+);

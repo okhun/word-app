@@ -87,20 +87,7 @@ exports.deleteUser = catchAsync(
     });
   }
 );
-exports.getAggregatedWords = catchAsync(
-  async (req: any, res: any, next: any) => {
-    res.status(204).json({
-      message: "The user has been deleted",
-    });
-  }
-);
-exports.getAggregatedWordsById = catchAsync(
-  async (req: any, res: any, next: any) => {
-    res.status(204).json({
-      message: "The user has been deleted",
-    });
-  }
-);
+
 exports.getUserSettings = catchAsync(async (req: any, res: any, next: any) => {
   res.status(204).json({
     message: "The user has been deleted",

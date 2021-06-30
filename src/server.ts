@@ -11,6 +11,7 @@ process.on("uncaughtException", (err) => {
 //   "<PASSWORD>",
 //   process.env.DATABASE_PASSWORD
 // );
+const db = process.env.DATA;
 const DB = `mongodb+srv://word:UfXi81NKOR7xcMP3DkVt@cluster0.xbhyy.mongodb.net/wordsapp?retryWrites=true&w=majority`;
 
 mongoose
