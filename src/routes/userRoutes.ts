@@ -9,6 +9,16 @@ router
   .route("/:id/tokens")
   .get(authController.protect, authController.getUserToken);
 router
+  .route("/:id/aggregatedWords")
+  .get(authController.protect, userController.getAggregatedWords);
+router
+  .route("/:id/aggregatedWords/:wordId")
+  .get(authController.protect, userController.getAggregatedWordsById);
+router
+  .route("/:id/settings")
+  .get(authController.protect, userController.getUserSettings)
+  .put(authController.protect, userController.upUserSettings);
+router
   .route("/:id")
   .get(authController.protect, userController.getUser)
   .put(authController.protect, userController.updateUser)
