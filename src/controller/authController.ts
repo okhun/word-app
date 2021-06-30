@@ -9,6 +9,11 @@ const signToken = (id: any) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
+const signRefreshToken = (id: any) => {
+  return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, {
+    expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+  });
+};
 exports.signup = catchAsyncA(
   async (
     req: any,
@@ -88,5 +93,16 @@ exports.protect = catchAsyncA(async (req: any, res: any, next: any) => {
   next();
 });
 exports.getUserToken = catchAsyncA(async (req: any, res: any, next: any) => {
-  next();
+  if (req.user.id !== req.params.id) {
+    return next(new AppError3("Bad request", 400));
+  }
+  const token = signToken(req.params.id);
+  const refreshToken = signRefreshToken(req.params.id);
+  res.status(200).json({
+    message: "Successful",
+    token,
+    refreshToken,
+    userId: req.user.id,
+    name: req.user.name,
+  });
 });
