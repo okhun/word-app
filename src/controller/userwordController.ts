@@ -1,4 +1,5 @@
 const UserWord = require("../model/userwordModel");
+const LearnWord = require("../model/wordModel");
 const catchAsync3 = require("../utils/catchAsync");
 const AppError5 = require("../utils/appError");
 exports.createUserWord = catchAsync3(
@@ -143,23 +144,40 @@ exports.getAggregatedWords = catchAsync3(
     const excludedFields = ["page", "group", "wordsPerPage"];
     excludedFields.forEach((el) => delete queryObj[el]);
     let queryStr = JSON.stringify(queryObj);
-    queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
     const query = JSON.parse(queryStr);
+    let queryList = [];
+
+    if (query?.difficulty) {
+      queryList.push({ "word.difficulty": query.difficulty });
+    }
+    if (query?.test) {
+      queryList.push({
+        "word.optional.testFieldString": query.test,
+      });
+    }
+    queryList.push({ userId: req.params.id });
+
     const aggWords = await UserWord.find({
-      $and: [
-        { "word.difficulty": req.query.difficulty },
-        { userId: req.params.id },
-      ],
+      $and: queryList,
     });
+    const wordidList = aggWords.map((el: any) => el.wordId);
+
+    const learnedWord = await LearnWord.find({ _id: wordidList });
 
     res.status(200).json({
       status: "success",
-      data: { aggWords },
+      result: learnedWord.length,
+      data: { learnedWord },
     });
   }
 );
 exports.getAggregatedWordsById = catchAsync3(
   async (req: any, res: any, next: any) => {
+    if (req.user.id !== req.params.id) {
+      return next(new AppError5("Bad request", 400));
+    }
     res.status(204).json({
       message: "The user has been deleted",
     });
