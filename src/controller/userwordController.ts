@@ -163,8 +163,16 @@ exports.getAggregatedWords = catchAsync3(
       $and: queryList,
     });
     const wordidList = aggWords.map((el: any) => el.wordId);
-
-    const learnedWord = await LearnWord.find({ _id: wordidList });
+    // Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.wordsPerPage * 1 || 100;
+    const skip = (page - 1) * limit;
+    let lastQuery = LearnWord.find({ _id: wordidList }).skip(skip).limit(limit);
+    if (req.query?.page) {
+      const numWord = await UserWord.countDocuments();
+      if (skip > numWord) return next(new AppError5("Bad request", 400));
+    }
+    const learnedWord = await lastQuery;
 
     res.status(200).json({
       status: "success",
