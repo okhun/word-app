@@ -12,7 +12,7 @@ router
   .route("/:id/aggregatedWords")
   .get(authController.protect, userwordController.getAggregatedWords);
 router
-  .route("/:id/aggregatedWords/:wordId")
+  .route("/:id/aggregatedWords/:wordid")
   .get(authController.protect, userwordController.getAggregatedWordsById);
 router
   .route("/:id/settings")

@@ -186,8 +186,15 @@ exports.getAggregatedWordsById = catchAsync3(
     if (req.user.id !== req.params.id) {
       return next(new AppError5("Bad request", 400));
     }
-    res.status(204).json({
-      message: "The user has been deleted",
+    const userWord = await UserWord.find({
+      $and: [{ wordId: req.params.wordid }, { userId: req.params.id }],
+    });
+    if (!userWord) {
+      return next(new AppError2("User'word not found"));
+    }
+    res.status(200).json({
+      status: "success",
+      data: { userWord },
     });
   }
 );
