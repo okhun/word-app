@@ -19,7 +19,6 @@ mongoose
     useCreateIndex: true,
     useNewUrlParser: true,
     useFindAndModify: false,
-    useUnifiedTopology: true,
   })
   .then((con) => console.log("DB connection successfully"));
 
